@@ -1,0 +1,59 @@
+├── HTR_ctc
+    ├── data
+    |   ├── ascii
+    |   ├── generated
+    |   |   ├── crop-csv
+    |   |   ├── EG-BG-LC
+    |   |   ├── EG-BG-LC-csv
+    |   |   └── syn2
+    |   ├── historical
+    |   ├── lines
+    |   └── words
+    ├── saved_datasets
+    |   └── no
+    └── saved_models                 
+    |   └── best
+
+├── PyTorch-CycleGAN
+    ├── datasets                   
+    |   ├── text2kells         # i.e. brucewayne2batman
+    |   |   ├── train              # Training
+    |   |   |   ├── A              # Contains domain A images (i.e. Bruce Wayne)
+    |   |   |   └── B              # Contains domain B images (i.e. Batman)
+    |   |   └── test               # Testing
+    |   |   |   ├── A              # Contains domain A images (i.e. Bruce Wayne)
+    |   |   |   └── B              # Contains domain B images (i.e. Batman)
+    |   ├── cropped data           # EXIST?
+    |   └── saintgalldb-v1-2.0
+    |   |   ├── data
+    |   |   |   └── line_images_normalized
+    |   |   ├── ground_truth
+    |   |   └── sets
+    └── output
+    |   ├── A
+    |   ├── B
+    |   ├── best
+    |   └── <str(save_number)>
+    |   |   ├── best
+    |   |   └── <str(epoch)>
+
+
+Note: I manually created: crop-csv, EG-BG-LC-csv, datasets and all subfolders
+Not needed?
+	book_generation
+
+Structure in Colab/Drive:
+
+HTR_ctc->data->generated->EG-BG-LC (containing .csv, .png files from Source Domain Generation)
+PyTorch-CycleGAN->datasets->text2illuminated->train->A, B (B containing kells images)
+
+
+TRYING:
+source_dataset = HTR_ctc/data/generated/EG-BG-LC (.csv, .png files)
+target_dataset = HTR_ctc/data/generated/train/B (kells images)
+
+(I'm assuming from PyTorch-CycleGAN/datasets.py that the files in EG-BG-LC get cropped and put in train/A)
+	(not changing:
+		files in iam_data_loader folder
+		paper_rd_benchmark.py
+		reading_discriminator.py)

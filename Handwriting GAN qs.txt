@@ -1,0 +1,95 @@
+1. Folders not in repo:
+
+/HTR_ctc/saved_models/
+/HTR_ctc/data/
+/HTR_ctc/data/output/
+/HTR_ctc/data/generated/syn2/
+/PyTorch-CycleGAN/output/
+/PyTorch-CycleGAN/output/best/
+/PyTorch-CycleGAN/output/best/images2RD/
+/PyTorch-CycleGAN/output/B/
+/PyTorch-CycleGAN/datasets/
+/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/ground_truth/
+/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/sets/
+/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/data/line_images_normalized/
+/PyTorch-CycleGAN/datasets/cropped_data/
+/Users/manueldrazyk/Documents/Uni/Masterarbeit/drazyk_master/book_generation/
+
+
+2. Errors when running:
+
+a.
+
+[2023-01-09 03:29:23, INFO, PHOCNet-Experiment::train] --- Running PHOCNet Training ---
+Namespace(batchSize=1, cuda=True, cycle_loss_factor_A=10.0, cycle_loss_factor_B=10.0, cycleloss_function='L1', dataroot='datasets/text2illuminated/', decay_epoch=100, epoch=0, gan_loss_factor_A2B=1.0, gan_loss_factor_B2A=1.0, identity_loss_factor_A=5.0, identity_loss_factor_B=5.0, input_nc=3, load_last_model=False, n_cpu=8, n_epochs=201, noise=0.05, optimizer_lr=0.0002, output_nc=3, rd_loss_factor_A=2.5, rd_loss_factor_B=2.5, rd_low_loss_learn=False, rd_lr=1e-07, rd_pretrain_load=None, regenerate=False, resetRD=False, size=256, source_dataset='EG-BG-LC', target_dataset='B', use_rd=False, use_rd_A=False)
+[2023-01-09 03:29:23, INFO, PHOCNet-Experiment::train] Loading dataset
+[2023-01-09 03:29:23, INFO, PHOCNet-Experiment::train] Preparing Net
+RD
++--------------------------------+------------+
+|            Modules             | Parameters |
++--------------------------------+------------+
+|        cnn.conv0.weight        |    576     |
+|         cnn.conv0.bias         |     64     |
+|        cnn.conv1.weight        |   73728    |
+|         cnn.conv1.bias         |    128     |
+|        cnn.conv2.weight        |   294912   |
+|         cnn.conv2.bias         |    256     |
+|     cnn.batchnorm2.weight      |    256     |
+|      cnn.batchnorm2.bias       |    256     |
+|        cnn.conv3.weight        |   589824   |
+|         cnn.conv3.bias         |    256     |
+|        cnn.conv4.weight        |  1179648   |
+|         cnn.conv4.bias         |    512     |
+|     cnn.batchnorm4.weight      |    512     |
+|      cnn.batchnorm4.bias       |    512     |
+|        cnn.conv5.weight        |  2359296   |
+|         cnn.conv5.bias         |    512     |
+|        cnn.conv6.weight        |  1048576   |
+|         cnn.conv6.bias         |    512     |
+|     cnn.batchnorm6.weight      |    512     |
+|      cnn.batchnorm6.bias       |    512     |
+|     rnn.0.rnn.weight_ih_l0     |   524288   |
+|     rnn.0.rnn.weight_hh_l0     |   262144   |
+|      rnn.0.rnn.bias_ih_l0      |    1024    |
+|      rnn.0.rnn.bias_hh_l0      |    1024    |
+| rnn.0.rnn.weight_ih_l0_reverse |   524288   |
+| rnn.0.rnn.weight_hh_l0_reverse |   262144   |
+|  rnn.0.rnn.bias_ih_l0_reverse  |    1024    |
+|  rnn.0.rnn.bias_hh_l0_reverse  |    1024    |
+|     rnn.0.embedding.weight     |   131072   |
+|      rnn.0.embedding.bias      |    256     |
+|     rnn.1.rnn.weight_ih_l0     |   262144   |
+|     rnn.1.rnn.weight_hh_l0     |   262144   |
+|      rnn.1.rnn.bias_ih_l0      |    1024    |
+|      rnn.1.rnn.bias_hh_l0      |    1024    |
+| rnn.1.rnn.weight_ih_l0_reverse |   262144   |
+| rnn.1.rnn.weight_hh_l0_reverse |   262144   |
+|  rnn.1.rnn.bias_ih_l0_reverse  |    1024    |
+|  rnn.1.rnn.bias_hh_l0_reverse  |    1024    |
+|     rnn.1.embedding.weight     |   41984    |
+|      rnn.1.embedding.bias      |     82     |
++--------------------------------+------------+
+Total Trainable Params: 8354386
+[2023-01-09 03:29:23, INFO, PHOCNet-Experiment::train] Initializing Reading Discriminator
+RD
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Github/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/train", line 153, in <module>
+    count_parameters(rd)
+  File "/content/drive/MyDrive/Github/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/train", line 133, in count_parameters
+    for name, parameter in model.named_parameters():
+AttributeError: 'ReadingDiscriminator' object has no attribute 'named_parameters'
+
+
+b. (after adding 'named_parameters' to the 'def __init__' of 'ReadingDiscriminator', adding 'self.named_parameters = named_parameters' below that, and uncommenting the two lines further down related to 'named_parameters')
+
+[2023-01-09 03:26:53, INFO, PHOCNet-Experiment::train] Initializing Reading Discriminator
+[2023-01-09 03:26:57, INFO, Reading Discriminator] Loading model parameters failed, /content/drive/MyDrive/Github/Generating-Synthetic-Handwritten-Historical-Documents/HTR_ctc/saved_models/Falsenot found
+RD
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Github/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/train", line 153, in <module>
+    count_parameters(rd)
+  File "/content/drive/MyDrive/Github/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/train", line 133, in count_parameters
+    for name, parameter in model.named_parameters():
+  File "/usr/local/lib/python3.6/dist-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+TypeError: forward() missing 4 required positional arguments: 'log_probs', 'targets', 'input_lengths', and 'target_lengths'
