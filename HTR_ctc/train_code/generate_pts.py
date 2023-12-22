@@ -37,7 +37,9 @@ logger.info('--- Running PHOCNet Training ---')
 
 #cudnn.benchmark = True
 # prepare datset loader
-def InitDataset(data_set, augment_factor = 0, path_to_generator_A2B = '', source_dataset='EG-BG-LC', save_path = ''):
+
+
+def InitDataset(data_set, augment_factor=0, path_to_generator_A2B='', source_dataset='EG-BG-LC', save_path=''):
     if data_set == 'IAM':
         train_set = IAMLoader('train', level=data_name, fixed_size=(128, None))
         test_set = IAMLoader('test', level=data_name, fixed_size=(48, 128))
@@ -91,7 +93,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     augment_factor = 0
     source_dataset = args.source_dataset
-    path_to_models = '/HOME/pondenka/manuel/CycleGANRD/PyTorch-CycleGAN/output/'
+    path_to_models = 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/'           # '/HOME/pondenka/manuel/CycleGANRD/PyTorch-CycleGAN/output/'
 
     if source_dataset == 'EG' or source_dataset == 'EG-BG':
         forceLower = True

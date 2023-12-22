@@ -88,7 +88,9 @@ def InitStandardRD(wandb = None, nlr=1e-4, rd_low_loss_learn=False, load_model =
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, [int(.5 * max_epochs), int(.75 * max_epochs)])
 
     logger.info('Initializing Reading Discriminator')
-    rd = ReadingDiscriminator(optimizer, net, loss, 1e-4, load_model, rd_low_loss_learn)
+    rd = ReadingDiscriminator(optimizer, net, loss, load_model, 1e-4, rd_low_loss_learn) # SB altered code
+    # rd = ReadingDiscriminator(optimizer, net, loss, 1e-4, load_model, rd_low_loss_learn)   # true original
+
     return rd, scheduler
 
 
@@ -119,7 +121,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     augment_factor = 0
     source_dataset = args.source_dataset
-    path_to_models = '/HOME/pondenka/manuel/CycleGANRD/PyTorch-CycleGAN/output/'
+    path_to_models = 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/'
     save_number = args.save_number
 
     if 'LC' not in source_dataset:

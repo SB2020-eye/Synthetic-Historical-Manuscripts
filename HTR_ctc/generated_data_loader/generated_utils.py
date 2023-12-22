@@ -23,8 +23,9 @@ delimiter = '$'
 # |    x1,y1|
 #  _________
 
-def getWordsInCrop(name, source, x0, y0, x1, y1, source_dataset):
+# SB: source = C:/Users/scott/desktop/manuscriptproject/code/Generating-Synthetic-Handwritten-Historical-Documents/HTR_ctc/data/generated/
 
+def getWordsInCrop(name, source, x0, y0, x1, y1, source_dataset):
     scope_tolerance = bounding_box * 0.01 # normally try 0.05
     # print('x0: ' + str(x0) + ' y0: ' + str(y0) + 'x1: ' + str(x1) + ' y1: ' + str(y1))
     csvCrop = open(source + 'csv-crop/' + name + '-crop.csv', 'w+')
@@ -149,10 +150,12 @@ def pfloat(number): # positive float
 def getRandomCrop(image, image_name, source, source_dataset):
     boundingBox_size = 256
     hasWords = False
-    while True:
-        rand_x = random.randint(600,
-                                2154)  # the text of the document is between 600 and 2154 (-256 = 2510) width
-        rand_y = random.randint(582, 2937)
+    attempts = 0 # SB
+    while True: # SB: enter numbers below as follows, for width (x) and height (y), respectively: (margin length, page length - margin length - boundingBox size)
+        rand_x = random.randint(520,
+                                1611)  # orig: (600, 2154) "the text of the document is between 600 and 2154 (-256 = 2510) width" (?)
+        rand_y = random.randint(380, 2453) # SB: x & y assumes text is centered; orig: (582, 2937)
+        # SB: in the future, possibly automate to find margins and get #s above accordingly
         # print('x: ' + str(rand_x) + ', y: ' + str(rand_y))
         #image = tf.image.crop_to_bounding_box(image, rand_y, rand_x, boundingBox_size, boundingBox_size)
         croppedImage = image[rand_y: rand_y + boundingBox_size, rand_x: rand_x + boundingBox_size,:]
@@ -160,6 +163,10 @@ def getRandomCrop(image, image_name, source, source_dataset):
                                        rand_y + boundingBox_size, source_dataset)
         if np.mean(croppedImage) < 230 and hasWords:  # recrop if picture is too white (not enough text)
             break
+        if not hasWords: # SB
+            attempts += 1 # SB
+        if attempts > 30: # SB: when page has too little text to meet requirements, give up after 15 tries
+            break # SB
 
     return croppedImage, csvCropString
 
@@ -232,6 +239,7 @@ def generateCrops(nr_of_channels, source, just_generate = False, crop_path = 'tr
                         _, w, _ = word_array[i].shape
                         if w > 1:
                             data.append([word_array[i].copy(), info_array[i]])
+            
             t3 = time.time()
         image_count += 1
         if image_count % (len(data_image_names) // 10) == 1:
@@ -239,4 +247,3 @@ def generateCrops(nr_of_channels, source, just_generate = False, crop_path = 'tr
 
     print('Finished crops')
     return data
-    

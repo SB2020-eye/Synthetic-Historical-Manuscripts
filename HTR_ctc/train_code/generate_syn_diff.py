@@ -120,12 +120,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     augment_factor = 0
     source_dataset = 'EG-BG-LC'
-    path_to_model_IAM = '/HOME/pondenka/manuel/CycleGANRD/HTR_ctc/saved_models/IAMN90.pth'
-    path_to_model_GEN = '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/best/GEN150.pth'
-    path_to_model_NoPre = '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/best/NoPreN200.pth'
-    path_to_model_IAM2RD = '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/best/TwoIAMN110.pth'
-    path_to_model_GEN2RD = '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/best/TwoGEN190.pth'
-    path_to_model_NoPre2RD = '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/best/TwoNoPreN190.pth'
+    path_to_model_IAM = 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/HTR_ctc/saved_models/IAMN90.pth' # '/HOME/pondenka/manuel/CycleGANRD/HTR_ctc/saved_models/IAMN90.pth'
+    path_to_model_GEN = 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/best/GEN150.pth'  # '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/best/GEN150.pth'
+    path_to_model_NoPre = 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/best/NoPreN200.pth' # '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/best/NoPreN200.pth'
+    path_to_model_IAM2RD = 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/best/TwoIAMN110.pth' # '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/best/TwoIAMN110.pth'
+    path_to_model_GEN2RD = 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/best/TwoGEN190.pth' # '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/best/TwoGEN190.pth'
+    path_to_model_NoPre2RD = 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/best/TwoNoPreN190.pth' # '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/best/TwoNoPreN190.pth'
     save_number = args.save_number
 
     transforms_ = [transforms.ToTensor()]
@@ -160,11 +160,11 @@ if __name__ == "__main__":
     # NoPre2RD_A2B.cuda()
     # NoPre2RD_A2B.load_state_dict(torch.load(path_to_model_NoPre2RD))
     count = 0
-    all_image_names = os.listdir('/HOME/pondenka/manuel/CycleGANRD/HTR_ctc/data/generated/' + source_dataset)
+    all_image_names = os.listdir('C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/HTR_ctc/data/generated/train/' + source_dataset) # /HOME/pondenka/manuel/CycleGANRD/HTR_ctc/
     for image_name in all_image_names:
         if image_name[-1].lower() == 'g':  # to avoid e.g. thumbs.db files
             print(image_name)
-            image = cv2.imread(os.path.join('/HOME/pondenka/manuel/CycleGANRD/HTR_ctc/data/generated/' + source_dataset, image_name))
+            image = cv2.imread(os.path.join('C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/HTR_ctc/data/generated/train/' + source_dataset, image_name)) #/HOME/pondenka/manuel/CycleGANRD/HTR_ctc/data/generated/
             #print(image.size)
             image = cv2.normalize(image, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
@@ -215,7 +215,7 @@ if __name__ == "__main__":
                 counter += 1;
 
             iam_set = height_list # np.concatenate(height_list, axis = 0)
-            cv2.imwrite('/HOME/pondenka/manuel/CycleGANRD/HTR_ctc/data/generated/syn2/' + image_name, iam_set)
+            cv2.imwrite('C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/HTR_ctc/data/generated/syn2/' + image_name, iam_set) # /HOME/pondenka/manuel/CycleGANRD/HTR_ctc/data/generated/syn2/
 
 
             #

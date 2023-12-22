@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+# 2 lines below added by SB (to solve import errors--"ModuleNotFoundError: No module named 'HTR_ctc'")
+import sys
+sys.path.append('C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents')
+
 import argparse
 import sys
 import os
@@ -30,60 +34,63 @@ print(opt)
 if torch.cuda.is_available() and not opt.cuda:
     print("WARNING: You have a CUDA device, so you should probably run with --cuda")
 
-###### Definition of variables ######
-# Networks
-netG_A2B = Generator(opt.input_nc, opt.output_nc)
-netG_B2A = Generator(opt.output_nc, opt.input_nc)
+# added by SB (to overcome Windows-specific RuntimeError--"attempt to start a new process...", "not using fork...")
+if __name__ == '__main__':
 
-if opt.cuda:
-    netG_A2B.cuda()
-    netG_B2A.cuda()
+    ###### Definition of variables ######
+    # Networks
+    netG_A2B = Generator(opt.input_nc, opt.output_nc)
+    netG_B2A = Generator(opt.output_nc, opt.input_nc)
 
-# Load state dicts
-netG_A2B.load_state_dict(torch.load(opt.generator_A2B))
-netG_B2A.load_state_dict(torch.load(opt.generator_B2A))
+    if opt.cuda:
+        netG_A2B.cuda()
+        netG_B2A.cuda()
 
-# Set model's test mode
-netG_A2B.eval()
-netG_B2A.eval()
+    # Load state dicts
+    netG_A2B.load_state_dict(torch.load(opt.generator_A2B))
+    netG_B2A.load_state_dict(torch.load(opt.generator_B2A))
 
-# Inputs & targets memory allocation
-Tensor = torch.cuda.FloatTensor if opt.cuda else torch.Tensor
-input_A = Tensor(opt.batchSize, opt.input_nc, opt.size, opt.size)
-input_B = Tensor(opt.batchSize, opt.output_nc, opt.size, opt.size)
+    # Set model's test mode
+    netG_A2B.eval()
+    netG_B2A.eval()
 
-# Dataset loader
-transforms_ = [ transforms.ToTensor()]
-dataloader = DataLoader(ImageDataset(opt.dataroot, transforms_=transforms_, mode='test'), 
-                        batch_size=opt.batchSize, shuffle=False, num_workers=opt.n_cpu)
-###################################
+    # Inputs & targets memory allocation
+    Tensor = torch.cuda.FloatTensor if opt.cuda else torch.Tensor
+    input_A = Tensor(opt.batchSize, opt.input_nc, opt.size, opt.size)
+    input_B = Tensor(opt.batchSize, opt.output_nc, opt.size, opt.size)
 
-###### Testing######
+    # Dataset loader
+    transforms_ = [ transforms.ToTensor()]
+    dataloader = DataLoader(ImageDataset(opt.dataroot, transforms_=transforms_, mode='test'), 
+                            batch_size=opt.batchSize, shuffle=False, num_workers=opt.n_cpu)
+    ###################################
 
-# Create output dirs if they don't exist
-if not os.path.exists('/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/A'):
-    os.makedirs('/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/A')
-if not os.path.exists('/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/B'):
-    os.makedirs('/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/B')
+    ###### Testing######
 
-for i, batch in enumerate(dataloader):
-    # Set model input
-    real_A = Variable(input_A.copy_(batch['A']))
-    real_B = Variable(input_B.copy_(batch['B']))
+    # Create output dirs if they don't exist
+    if not os.path.exists('C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/A'):
+        os.makedirs('C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN//output/A')
+    if not os.path.exists('C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/B'):
+        os.makedirs('C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/B')
 
-    # Generate output
-    fake_B = 0.5*(netG_A2B(real_A).data + 1.0)
-    fake_A = 0.5*(netG_B2A(real_B).data + 1.0)
+    for i, batch in enumerate(dataloader):
+        # Set model input
+        real_A = Variable(input_A.copy_(batch['A']))
+        real_B = Variable(input_B.copy_(batch['B']))
 
-    # Save image files
-    save_image(fake_A, '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/A/%04d.png' % (i+1))
-    np_img = real_B.detach().squeeze(0).permute(1, 2, 0).cpu().numpy() * 255
-    cv2.imwrite('/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/B/real%04d.png' % (i+1), np_img )
-    np_img = fake_B.detach().squeeze(0).permute(1, 2, 0).cpu().numpy() * 255
-    cv2.imwrite('/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/B/%04d.png' % (i+1), np_img )
-    #save_image(fake_B, '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/B/%04d.png' % (i+1))
+        # Generate output
+        fake_B = 0.5*(netG_A2B(real_A).data + 1.0)
+        fake_A = 0.5*(netG_B2A(real_B).data + 1.0)
 
-    sys.stdout.write('\rGenerated images %04d of %04d' % (i+1, len(dataloader)))
+        # Save image files
+        save_image(fake_A, 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/A/%04d.png' % (i+1))
+        np_img = real_B.detach().squeeze(0).permute(1, 2, 0).cpu().numpy() * 255
+        cv2.imwrite('C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/B/real%04d.png' % (i+1), np_img)
+        np_img = fake_B.detach().squeeze(0).permute(1, 2, 0).cpu().numpy() * 255
+        cv2.imwrite('C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/output/B/%04d.png' % (i+1), np_img )
+        #save_image(fake_B, '/home/manuel/CycleGANRD/PyTorch-CycleGAN/output/B/%04d.png' % (i+1))
 
-sys.stdout.write('\n')
-###################################
+        sys.stdout.write('\rGenerated images %04d of %04d' % (i+1, len(dataloader)))
+
+    sys.stdout.write('\n')
+    ###################################

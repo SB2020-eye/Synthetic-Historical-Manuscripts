@@ -32,11 +32,19 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class ReadingDiscriminator():
 
-    def __init__(self, optimizer, net, loss, lr=1e-4, load_model = None, rd_low_loss_learn = False, load_model_full_path = None):
+    def __init__(self, optimizer, net, loss, load_model, lr=1e-4, rd_low_loss_learn=False, load_model_full_path=None):   # SB
+    # SB: using original line below, kept getting "TypeError: must be str, not bool" which traced back to load_model (which indeed was type bool at this point)
+    # def __init__(self, optimizer, net, loss, named_parameters, lr=1e-4, load_model = None, rd_low_loss_learn = False, load_model_full_path = None):  # SB original
+    # def __init__(self, optimizer, net, loss, lr=1e-4, load_model = None, rd_low_loss_learn = False, load_model_full_path = None):   # true original
+
         self.optimizer = optimizer
         self.lr = lr
         self.net = net.to(device)
         self.loss = loss
+        # print('named_parameters1:', named_parameters, type(named_parameters))
+        # self.named_parameters = named_parameters   # added by SB
+        # print('named_parameters2:', named_parameters, type(named_parameters))
+        self.load_model = load_model   # added by SB
         self.step_count = 0
         self.step_freq = 1
         if load_model is not None:
@@ -45,7 +53,6 @@ class ReadingDiscriminator():
             self.loadModel('', load_model_full_path)
         self.rd_low_loss_learn = rd_low_loss_learn
         
-
     def train_on_Dataloader(self, epoch, train_loader, test_set = None, test_loader=None, scheduler = None, wandb = None, forceLower = False):
 
         self.optimizer.zero_grad()
@@ -87,7 +94,7 @@ class ReadingDiscriminator():
 
     def train(self, img, transcr, batch_size_train=batch_size):
         # for name, param in self.net.named_parameters():
-        #     print(name, param.grad)
+            # print(name, param.grad)
         img = Variable(img.to(device))
         # cuda augm - alternatively for cpu use it on dataloader
         # img = torch_augm(img)
@@ -99,8 +106,8 @@ class ReadingDiscriminator():
         act_lens = torch.IntTensor(batch_size_train * [output.size(0)]) #todo: batchsize * width
         try:
             labels = Variable(torch.IntTensor([cdict[c] for c in ''.join(transcr)]))
-        except KeyError:
-            print('Training failed because of unknown key: ' + str(KeyError))
+        except KeyError as e:
+            print('Training failed because of unknown key: ' + str(e)) # SB: used to be str(KeyError))--this only gave <class 'KeyError'>
             return -1, ''
         label_lens = torch.IntTensor([len(t) for t in transcr])
 
@@ -257,10 +264,11 @@ class ReadingDiscriminator():
         cer_beam, wer_beam = [], []
         cer_beam_clean, wer_beam_clean = [], []
 
-        word_location = open("/HOME/pondenka/manuel/CycleGANRD/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/ground_truth/word_location.txt", "r")
-        word_transcription = open("/HOME/pondenka/manuel/CycleGANRD/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/ground_truth/transcription.txt",
+        word_location = open(
+            "C:/Users/scott/desktop/manuscriptproject/code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/ground_truth/word_location.txt", "r")
+        word_transcription = open("C:/Users/scott/desktop/manuscriptproject/code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/ground_truth/transcription.txt",
                                   "r")
-        test_images = open("/HOME/pondenka/manuel/CycleGANRD/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/sets/test.txt",
+        test_images = open("C:/Users/scott/desktop/manuscriptproject/code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/sets/test.txt",
                                   "r").readline()
         data = []
         transcription = word_transcription.readline().split(' ')
@@ -269,7 +277,7 @@ class ReadingDiscriminator():
             word_array = word_info.split(' ')
 
             test_images = open(
-                "/HOME/pondenka/manuel/CycleGANRD/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/sets/test.txt",
+                "C:/Users/scott/desktop/manuscriptproject/code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/sets/test.txt",
                 "r")
             rightPage = False
             for img_name in test_images:
@@ -284,7 +292,7 @@ class ReadingDiscriminator():
 
             word_text = transcription[1].split('|')
             count = 0
-            image = cv2.normalize(cv2.imread('/HOME/pondenka/manuel/CycleGANRD/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/data/line_images_normalized/' + str(word_array[0]) + '.png', cv2.IMREAD_GRAYSCALE), None, alpha=0, beta=1,
+            image = cv2.normalize(cv2.imread('C:/Users/scott/desktop/manuscriptproject/code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/datasets/saintgalldb-v1-2.0/data/line_images_normalized/' + str(word_array[0]) + '.png', cv2.IMREAD_GRAYSCALE), None, alpha=0, beta=1,
                           norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
             image = image[:, :, np.newaxis]
 
@@ -349,9 +357,11 @@ class ReadingDiscriminator():
         torch.save(self.net.state_dict(), model_path + filename)
 
     def loadModel(self, filename, model_path = model_path):
+        print('model_path is', type(model_path), model_path)
+        print('filename is', type(filename), str(filename))
         if isfile(model_path + filename):
             load_parameters = torch.load(model_path + filename)
-            self.net.load_state_dict(load_parameters)
+            self.net.load_state_dict(load_parameters, strict=False) # , strict=False added by SB
             self.net.to(device)
             logger.info('Loading model parameters for RD successfull')
         elif filename is not None:

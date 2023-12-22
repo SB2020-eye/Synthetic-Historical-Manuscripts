@@ -8,16 +8,22 @@ import torchvision.transforms as transforms
 import cv2
 from HTR_ctc.generated_data_loader.generated_utils import *
 
+import GPUtil  # SB
+GPUtil.showUtilization() # SB
+
 #todo: store all pictures, word crops and info in dataloader
 class ImageDataset(Dataset):
-    def __init__(self, root, transforms_=None, unaligned=False, mode='train', source_dataset = 'EG-BG-LC', target_dataset='B'):
+    def __init__(self, root, transforms_=None, unaligned=False, mode='train', source_dataset = 'A', target_dataset='B'): # SB: I changed source_dataset from 'EG-BG-LC' to 'A'
         self.files_A = []
         self.files_B = []
         self.transform = transforms.Compose(transforms_)
         self.unaligned = unaligned
         self.mode = mode
 
-        self.crops_A =  generateCrops(3, '/HOME/pondenka/manuel/CycleGANRD/HTR_ctc/data/generated/' , just_generate=True, crop_path='train/A/', source_dataset= source_dataset)
+        # New
+        self.crops_A =  generateCrops(3, 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/PyTorch-CycleGAN/datasets/text2kells/' , just_generate=True, crop_path='train/A/', source_dataset= source_dataset)
+        # Old (mirrors original)
+        # self.crops_A =  generateCrops(3, 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/HTR_ctc/data/generated/' , just_generate=True, crop_path='train/A/', source_dataset= source_dataset)
 
         self.files_B_name = sorted(glob.glob(root + '/' + mode + '/' + target_dataset + '/*.*'))
 

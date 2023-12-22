@@ -51,7 +51,7 @@ class GeneratedLoader(Dataset):
                 min_len = 2000
             while len(data) < min_len:
                 try:
-                    data.extend(generateCrops(nr_of_channels,'/HOME/pondenka/manuel/CycleGANRD/HTR_ctc/data/generated/', just_generate=False, generator_path=generator_path, source_dataset= source_dataset))
+                    data.extend(generateCrops(nr_of_channels, 'C:/Users/scott/Desktop/ManuscriptProject/Code/Generating-Synthetic-Handwritten-Historical-Documents/HTR_ctc/data/generated/', just_generate=False, generator_path=generator_path, source_dataset=source_dataset))   # /HOME/pondenka/manuel/CycleGANRD/HTR_ctc/data/generated/
                 except:
                     print('Error in generation of crops!' + str(traceback.format_exc()))
                 print('Data length is ' + str(len(data)))
